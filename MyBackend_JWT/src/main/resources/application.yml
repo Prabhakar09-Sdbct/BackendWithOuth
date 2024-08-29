@@ -1,0 +1,30 @@
+server:
+   port: 9106
+   application:
+      name: MyBackend_JWT
+   servlet:
+      context-path: /api
+
+spring:
+   application:
+        name: MyBackend_JWT
+   error:
+      whitelabel: 
+         enabled: false
+   profiles:
+      include: main
+   datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/crmdb_springboot?useUnicode=yes&characterEncoding=UTF-8
+      username: root
+      password: root
+   jpa:
+      generate-ddl: true
+      show-sql: false
+      properties:
+         hibernate:
+            format_sql: true
+            show-sql: false
+            ddl-auto: update
+            dialect: org.hibernate.dialect.MySQL8Dialect
+         
