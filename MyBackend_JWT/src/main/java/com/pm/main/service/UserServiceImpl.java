@@ -1,15 +1,22 @@
 package com.pm.main.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pm.main.dao.UserDao;
 import com.pm.main.dto.UserDto;
 
 @Service
-public class UserServiceImpl implements UserServiceInt
+@Transactional
+public class UserServiceImpl implements UserServiceInt, UserDetailsService
 {
 	@Autowired
 	UserDao userDao;
@@ -38,10 +45,15 @@ public class UserServiceImpl implements UserServiceInt
 	}
 	
 	@Override
-	public UserDto authenticate(String email)
+	public UserDetails authenticate(String email) throws UsernameNotFoundException
 	{
 		UserDto emp = userDao.findByEmail(email);
-		return emp;
+		if(email.equals(emp.getEmail()))
+		{
+			return new User(emp.getEmail(), emp.getPassword(), new ArrayList<>());
+		} else {
+			throw new UsernameNotFoundException("User Not Found !");
+		}
 	}
 	
 	@Override
@@ -86,5 +98,16 @@ public class UserServiceImpl implements UserServiceInt
 		}
 		
 		return status;
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+		UserDto emp = userDao.findByEmail(email);
+		if(email.equals(emp.getEmail()))
+		{
+			return new User(emp.getEmail(), emp.getPassword(), new ArrayList<>());
+		} else {
+			throw new UsernameNotFoundException("User Not Found !");
+		}
 	}
 }
